@@ -1,5 +1,9 @@
 package sortalgorithm
 
+import (
+	"math"
+)
+
 type Sort interface {
 	BubbleSort(nums []int) []int
 	FastSort(nums []int) []int
@@ -7,6 +11,7 @@ type Sort interface {
 	MergeSort(arr []int) []int
 	HeapSort(arr []int) []int
 	CountSort(arr []int) []int
+	BucketSort(arr []int) []int
 }
 
 type sortF struct{}
@@ -151,4 +156,50 @@ func (s *sortF) CountSort(arr []int) []int {
 		index++
 	}
 	return re
+}
+
+func (s *sortF) BucketSort(arr []int) []int {
+	max := 0
+	min := 0 
+	for i := 0; i < len(arr); i++ {
+		if arr[i] > max {
+			max = arr[i]
+		} else if arr[i] < min {
+			min = arr[i]
+		}
+	}
+	bucketSize := 10
+	bucketCount := int(math.Floor(float64((max - min) / bucketSize)) + 1)
+	buckets := make([][]int, bucketCount)
+    for i := 0; i < bucketCount; i++ {
+        buckets[i] = []int{} 
+    }
+	for i := 0; i < len(arr); i++ {
+		tmp := int(math.Floor(float64((arr[i] - min) / bucketSize))) 
+		buckets[tmp] = append(buckets[tmp], arr[i])
+	}
+	
+	var re []int = []int{}
+	for i := 0; i < bucketCount; i++ {
+		insertSort(buckets[i])
+		for j := 0; j < len(buckets[i]); j++ {
+			re = append(re, buckets[i][j])
+		}
+	}
+	return re
+}
+
+func insertSort(arr []int) []int {
+	preIndex := 0
+	curent := 0
+	for i := 1; i < len(arr); i++ {
+		curent = arr[i]
+		preIndex = i - 1
+		for preIndex >= 0 && arr[preIndex] > curent {
+			arr[preIndex+1] = arr[preIndex]
+			preIndex--
+		}
+		arr[preIndex+1] = curent
+	}
+	return arr
 }
