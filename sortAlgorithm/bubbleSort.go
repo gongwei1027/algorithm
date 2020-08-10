@@ -12,6 +12,7 @@ type Sort interface {
 	HeapSort(arr []int) []int
 	CountSort(arr []int) []int
 	BucketSort(arr []int) []int
+	RadixSort(arr []int) []int
 }
 
 type sortF struct{}
@@ -160,7 +161,7 @@ func (s *sortF) CountSort(arr []int) []int {
 
 func (s *sortF) BucketSort(arr []int) []int {
 	max := 0
-	min := 0 
+	min := 0
 	for i := 0; i < len(arr); i++ {
 		if arr[i] > max {
 			max = arr[i]
@@ -169,16 +170,16 @@ func (s *sortF) BucketSort(arr []int) []int {
 		}
 	}
 	bucketSize := 10
-	bucketCount := int(math.Floor(float64((max - min) / bucketSize)) + 1)
+	bucketCount := int(math.Floor(float64((max-min)/bucketSize)) + 1)
 	buckets := make([][]int, bucketCount)
-    for i := 0; i < bucketCount; i++ {
-        buckets[i] = []int{} 
-    }
+	for i := 0; i < bucketCount; i++ {
+		buckets[i] = []int{}
+	}
 	for i := 0; i < len(arr); i++ {
-		tmp := int(math.Floor(float64((arr[i] - min) / bucketSize))) 
+		tmp := int(math.Floor(float64((arr[i] - min) / bucketSize)))
 		buckets[tmp] = append(buckets[tmp], arr[i])
 	}
-	
+
 	var re []int = []int{}
 	for i := 0; i < bucketCount; i++ {
 		insertSort(buckets[i])
@@ -200,6 +201,34 @@ func insertSort(arr []int) []int {
 			preIndex--
 		}
 		arr[preIndex+1] = curent
+	}
+	return arr
+}
+
+func (s *sortF) RadixSort(arr []int) []int {
+	max := 0
+	for i := 0; i < len(arr); i++ {
+		if max < arr[i] {
+			max = arr[i]
+		}
+	}
+	n := len(arr)
+	for exp := 1; float64(max/exp) > 0; exp = exp * 10 {
+		buckets := make([]int, 10)
+		for i := 0; i < n; i++ {
+			buckets[(arr[i]/exp)%10]++
+		}
+		for i := 1; i < 10; i++ {
+			buckets[i] += buckets[i-1]
+		}
+		countSort := make([]int, n)
+		for i := n - 1; i >= 0; i-- {
+			countSort[buckets[(arr[i]/exp)%10]-1] = arr[i]
+			buckets[(arr[i]/exp)%10]--
+		}
+		for i := 0; i < n; i++ {
+			arr[i] = countSort[i]
+		}
 	}
 	return arr
 }

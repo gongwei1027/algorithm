@@ -17,26 +17,11 @@ func main() {
 	// var re []int
 
 	sort := selfSort.NewSortService()
-	// re = sort.Sort.BucketSort(testArr)
+	// re = sort.Sort.RadixSort(testArr)
 	// fmt.Println(re)
 
 	sortValue := reflect.ValueOf(sort.Sort)
 	sortType := reflect.TypeOf(sort.Sort)
-
-	// a := reflect.ValueOf(testArr)
-	// aNums := reflect.ValueOf(testnums)
-	// in := []reflect.Value{a}
-	// inNums := []reflect.Value{a, aNums}
-	// ret := sortValue.Method(0).Call(in)
-	// fmt.Println(sortType.Method(0).Name == "BubbleSort")
-	// a := sortType.Method(0).
-	// re := a.Method(testArr)
-	// for _, method := range sortType.Method {
-	// 	fmt.Println(method)
-	// }
-	// var re []int
-	// re = selfSort.BubbleSort(testArr)
-
 
 	for i := 0; i < sortValue.NumMethod(); i++ {
 		methodName := sortType.Method(i).Name
